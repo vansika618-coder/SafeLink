@@ -1,0 +1,225 @@
+<!DOCTYPE html><html lang="en" data-theme="dark"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Fake Link &amp; Message Checker</title>
+<style>
+:root{--bg:#000;--card:#07120c;--fg:#d8ffe9;--mut:#7fb597;--ac:#00ff88;--on:#000;--bd:#0f3322;--glow:rgba(0,255,136,.25);--low:#22c55e;--sus:#f59e0b;--high:#ef4444;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+:root[data-theme=light]{--bg:#fff;--card:#f4f4f4;--fg:#000;--mut:#555;--ac:#000;--on:#fff;--bd:#d4d4d4;--glow:rgba(0,0,0,.18)}
+html{scroll-padding-top:70px;scroll-behavior:smooth}*{box-sizing:border-box}
+body{margin:0;font:16px system-ui,sans-serif;background:var(--bg);color:var(--fg)}
+header{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:12px 20px;border-bottom:1px solid var(--bd);position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);z-index:5}
+nav a{color:var(--mut);text-decoration:none;margin-right:12px}nav a:hover,.logo{color:var(--ac)}.logo{font-weight:800}
+.hero{position:relative;text-align:center;padding:70px 18px 60px;overflow:hidden;border-bottom:1px solid var(--bd)}
+#mx{position:absolute;inset:0;width:100%;height:100%;opacity:.35}.hero>*:not(canvas){position:relative}
+.shield{font-size:68px;display:inline-block;animation:pulse 2.4s ease-in-out infinite;filter:drop-shadow(0 0 18px var(--ac))}
+@keyframes pulse{50%{transform:scale(1.12)}}@keyframes up{from{opacity:0;transform:translateY(16px)}}
+h1{font-size:clamp(30px,6vw,54px);margin:8px 0}h1 span,h2{color:var(--ac)}.hero p{max-width:560px;margin:0 auto 20px;color:var(--mut)}
+main{max-width:980px;margin:auto;padding:22px 18px}section{margin-bottom:44px;animation:up .6s both}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:16px;margin:12px 0;transition:.2s}.card:hover{box-shadow:0 0 16px var(--glow)}
+textarea{width:100%;min-height:100px;background:var(--bg);color:var(--fg);border:1px solid var(--ac);border-radius:8px;padding:10px;font:inherit}
+button,.btn{background:var(--ac);color:var(--on);border:0;border-radius:8px;padding:9px 16px;font-weight:700;cursor:pointer;margin:4px 6px 4px 0;text-decoration:none;display:inline-block;font-size:15px}
+.o{background:none;color:var(--ac);border:1px solid var(--ac)}.chip{background:var(--card);color:var(--fg);border:1px solid var(--bd);font-weight:400;font-size:13px;border-radius:99px}.chip:hover{border-color:var(--ac)}
+.tab.on{background:var(--ac);color:var(--on)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.pill{padding:3px 12px;border-radius:99px;color:#fff;font-weight:700;font-size:14px}.Low{background:var(--low)}.Suspicious{background:var(--sus)}.High{background:var(--high)}
+code{background:var(--bg);padding:2px 6px;border-radius:5px;border:1px solid var(--bd);word-break:break-all}.mut,small{color:var(--mut)}li{margin:4px 0}
+mark{background:#ef444477;color:inherit;border-radius:3px;padding:0 2px}
+.res{display:flex;gap:18px;flex-wrap:wrap;align-items:center}.res>div:last-child{flex:1;min-width:230px}
+.scan div{font-family:monospace;color:var(--ac);animation:up .3s both}
+.sb{display:flex;height:26px;border-radius:8px;overflow:hidden;margin:4px 0 14px}.sb i{width:0;transition:width 1.2s;font:11px/26px system-ui;color:#fff;text-align:center;font-style:normal;white-space:nowrap;overflow:hidden}
+.big{font-size:30px;color:var(--ac);font-weight:800}.ai{margin-top:8px}
+input,select{width:100%;padding:10px;margin:6px 0;background:var(--bg);color:var(--fg);border:1px solid var(--bd);border-radius:8px;font:inherit}.modal{position:fixed;inset:0;background:rgba(0,0,0,.82);display:none;align-items:center;justify-content:center;z-index:20;padding:16px;overflow:auto}.modal.show{display:flex}.mbox{max-width:430px;width:100%;background:var(--card);border:1px solid var(--ac);border-radius:14px;padding:22px;margin:auto}.mbox.wide{max-width:760px}a.lk{color:var(--ac);cursor:pointer;text-decoration:underline}#amsg{color:var(--high);min-height:20px;font-size:14px}
+header{display:grid;grid-template-columns:1fr auto 1fr;align-items:center}header nav{justify-self:center;text-align:center}header nav a{margin:0 8px}.hr{justify-self:end;display:flex;gap:4px;align-items:center;justify-content:flex-end;flex-wrap:wrap}
+button.red,.btn.red{background:var(--high);color:#fff;border:0;box-shadow:0 0 10px rgba(239,68,68,.55)}
+.av{width:38px;height:38px;border-radius:50%;padding:0;display:inline-flex;align-items:center;justify-content:center}
+.dd{display:none;position:absolute;right:0;top:46px;min-width:230px;background:var(--card);border:1px solid var(--ac);border-radius:12px;padding:12px;z-index:30;text-align:left}.dd.show{display:block}
+.lk2{display:block;padding:8px 2px;cursor:pointer;color:var(--fg)}.lk2:hover{color:var(--ac)}
+
+
+:root{padding-top:0}html{scroll-padding-top:90px}
+header{position:fixed;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;padding:10px 16px;padding-top:calc(10px + env(safe-area-inset-top,0px));background:var(--bg);border-bottom:1px solid var(--bd);z-index:15}
+.hr{justify-self:auto;gap:6px}
+.soc{display:flex;gap:40px;justify-content:center;flex-wrap:wrap;padding:26px 14px 34px;border-top:1px solid var(--bd)}.sg{text-align:center}.sg small{display:block;margin-bottom:4px}.sg .row{display:flex;gap:6px;justify-content:center}
+.sg a{display:flex;width:48px;height:48px;align-items:center;justify-content:center;color:var(--fg);transition:.2s}.sg a:hover{color:var(--ac);transform:scale(1.15)}
+@media(max-width:600px){header{padding:8px 10px;padding-top:calc(8px + env(safe-area-inset-top,0px))}header button{padding:7px 10px;font-size:13px;margin:0}.hr{gap:6px}.av{width:36px;height:36px}.hero{padding:40px 14px 34px}h2{font-size:22px}main{padding:16px 12px}.mbox{padding:16px}.card{padding:12px}.soc{gap:24px}.dd{min-width:210px}}
+</style></head><body>
+<header><button class="o" onclick="theme()">Theme</button><div class="hr"><button class="o" onclick="openDash()">Dashboard</button><button class="red" onclick="rpt.classList.add('show')">Been Scammed?</button><span id="usr" style="position:relative"></span></div></header>
+
+<div class="hero"><canvas id="mx"></canvas><svg class="shield" width="76" height="76" viewBox="0 0 24 24" fill="none" stroke="var(--ac)" stroke-width="1.6" stroke-linejoin="round"><path d="M12 2l8 3v6c0 5-3.5 9-8 11-4.5-2-8-6-8-11V5z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg>
+<h1>Is that link <span>safe?</span></h1><p>Paste any suspicious URL or SMS. We scan for phishing warning signs, score the risk and explain why.</p>
+<a class="btn" href="#check">Check now</a></div>
+
+<main>
+<section id="check"><h2>Check a link or message</h2>
+<div class="card"><button class="tab on" onclick="mode('u',this)">URL</button><button class="tab o" onclick="mode('m',this)">SMS</button><button class="tab o" onclick="mode('e',this)">Email</button><button class="tab o" onclick="mode('b',this)">Bulk</button>
+<textarea id="inp"></textarea><div id="chips"></div>
+<button onclick="run()">Analyse</button><button class="o" onclick="inp.value='';out.innerHTML=''">Clear</button></div><div id="out"></div></section>
+
+<section id="sms"><h2>Phone SMS inbox &amp; alerts</h2>
+<div class="card"><p>Copy suspicious texts from your phone, paste them here (blank line between messages) and scan them all at once.</p>
+<textarea id="box" placeholder="Paste one or more SMS messages…"></textarea><button onclick="scan()">Scan messages</button><button class="o" onclick="hist=[];save();draw()">Clear all</button>
+<p class="mut">Live auto-forwarding from a phone needs a server (the Flask backend). This page keeps everything on your device.</p></div>
+<div class="grid" id="dash"></div><div id="feed"></div></section>
+
+<section id="learn"><h2>Common scams</h2><div class="card" id="sod"></div><div class="grid">
+<div class="card"><b>KYC / bank block</b><br><small>“Account blocked, update KYC now.” Banks never ask this by link.</small></div>
+<div class="card"><b>OTP theft</b><br><small>Anyone asking for your OTP is a fraudster. No exceptions.</small></div>
+<div class="card"><b>Lottery / cashback</b><br><small>Prizes you never entered for are bait for your details.</small></div>
+<div class="card"><b>Courier fee</b><br><small>Fake delivery texts with a small “redelivery fee” link.</small></div>
+<div class="card"><b>UPI refund</b><br><small>You never need to enter your PIN to receive money.</small></div></div>
+</section>
+
+<p class="mut" style="text-align:center">Educational tool: a low-risk result is never a guarantee of safety.</p>
+</main>
+<footer class="soc"><div class="sg"><small>Kartik Patil</small><div class="row"><a href="https://www.instagram.com/kart1k.patil" target="_blank" rel="noopener" aria-label="Kartik Patil Instagram" title="Instagram"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></a><a href="https://www.linkedin.com/in/kartik-patil-17b261399" target="_blank" rel="noopener" aria-label="Kartik Patil LinkedIn" title="LinkedIn"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></a><a href="https://github.com/Kart1kPatil" target="_blank" rel="noopener" aria-label="Kartik Patil GitHub" title="GitHub"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg></a></div></div><div class="sg"><small>Vansika M</small><div class="row"><a href="https://www.instagram.com/vansika._.18" target="_blank" rel="noopener" aria-label="Vansika M Instagram" title="Instagram"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></a><a href="https://www.linkedin.com/in/vansika-m-309a81421/" target="_blank" rel="noopener" aria-label="Vansika M LinkedIn" title="LinkedIn"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></a><a href="https://github.com/vansika618-coder" target="_blank" rel="noopener" aria-label="Vansika M GitHub" title="GitHub"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg></a></div></div></footer>
+<div id="auth" class="modal"><div class="mbox" id="abox"></div></div>
+<div id="dm" class="modal"><div class="mbox wide"><div style="display:flex;justify-content:space-between;align-items:center"><h2 style="margin:0">Dashboard</h2><button class="o" onclick="dm.classList.remove('show')">X</button></div><div id="dbody"></div></div></div>
+<div id="rpt" class="modal"><div class="mbox"><div style="display:flex;justify-content:space-between;align-items:center"><h2 style="margin:0;color:var(--high)">Been Scammed?</h2><button class="o" onclick="rpt.classList.remove('show')">X</button></div>
+<ol><li>Stop all contact. Do not click or reply further.</li><li>Call your bank or UPI app right away to block cards and payments.</li><li>Call the cyber fraud helpline <b>1930</b> as soon as possible.</li><li>Report the incident at cybercrime.gov.in.</li><li>Keep screenshots, phone numbers and links as evidence.</li></ol>
+<a class="btn red" href="https://cybercrime.gov.in" target="_blank" rel="noopener">Report at cybercrime.gov.in</a><span class="btn o">Call 1930</span></div></div>
+<div id="pm" class="modal"><div class="mbox" id="pmb"></div></div>
+<script>
+const $=id=>document.getElementById(id),inp=$("inp"),out=$("out"),box=$("box");
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const SHORT=["bit.ly","tinyurl.com","t.co","goo.gl","rb.gy","cutt.ly","is.gd","ow.ly"],TLD=[".zip",".xyz",".top",".tk",".ml",".gq",".cf",".click",".work",".support"],
+KW=["login","verify","secure","update","account","bank","kyc","otp","password","wallet","reward","prize"],
+URG=["urgent","immediately","expires","within 24","last chance","act now","blocked","suspended","final notice"],
+SENS=["otp","password","pin","cvv","aadhaar","pan card","kyc","card number","bank details"],REW=["won","winner","prize","lottery","cashback","free gift","reward","claim"],
+URLRE=/(?:https?:\/\/|www\.)\S+|\b(?:bit\.ly|tinyurl\.com|t\.co|goo\.gl|rb\.gy|cutt\.ly|is\.gd|ow\.ly)\/\S+/gi;
+const HLRE=new RegExp("(?:"+[...new Set([...KW,...URG,...SENS,...REW,...SHORT,...TLD])].sort((a,b)=>b.length-a.length).map(x=>(/^\w/.test(x)?"\\b":"")+x.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+(/\w$/.test(x)?"\\b":"")).join("|")+")","gi");
+const hl=t=>esc(t).replace(HLRE,m=>"<mark>"+m+"</mark>");
+const lvl=s=>s<.35?"Low Risk":s<.65?"Suspicious":"High Risk",cls=l=>l.split(" ")[0],COL={Low:"var(--low)",Suspicious:"var(--sus)",High:"var(--high)"};
+const ADV={"Low Risk":"No major warning signs, but stay careful. Never share OTPs or passwords.","Suspicious":"Don’t click or reply yet. Verify through the official website or app.","High Risk":"Do NOT click or reply. Delete it and report at cybercrime.gov.in or call 1930."};
+function urlRules(u){if(!/^https?:\/\//i.test(u))u="http://"+u;let p;try{p=new URL(u)}catch(e){return[.4,["Malformed URL"]]}
+const h=p.hostname.toLowerCase(),r=[],a=(w,t)=>r.push([w,t]);
+if(SHORT.includes(h))a(.35,"Shortened URL hides the real destination");if(/^[\d.]+$/.test(h))a(.5,"Uses an IP address instead of a domain");
+if(u.includes("@"))a(.3,"Contains ‘@’ which can disguise the real host");if(p.protocol=="http:")a(.15,"Not using HTTPS");
+if(h.split(".").length>=5)a(.2,"Unusually many subdomains");if(h.includes("xn--"))a(.3,"Look-alike (punycode) domain");
+if(TLD.some(t=>h.endsWith(t)))a(.25,"Domain extension often abused in scams");
+const k=KW.filter(w=>u.toLowerCase().includes(w));if(k.length)a(Math.min(.3,.1*k.length),"Suspicious keywords: "+k.join(", "));
+if(u.length>75)a(.1,"Unusually long URL");if((h.match(/-/g)||[]).length>=3)a(.15,"Many hyphens in domain");
+return[Math.min(1,r.reduce((s,x)=>s+x[0],0)),r.map(x=>x[1])]}
+function msgRules(t){t=t.toLowerCase();const r=[];
+[[URG,.25,"Creates urgency"],[SENS,.3,"Asks for sensitive information"],[REW,.25,"Offers rewards or prizes"]].forEach(([w,s,l])=>{const f=w.filter(x=>t.includes(x));if(f.length)r.push([s,l+": "+f.join(", ")])});
+if(t.match(URLRE))r.push([.15,"Contains a link"]);if(/dear (customer|user|sir|member|account holder)/.test(t))r.push([.15,"Generic greeting instead of your name"]);if(/\.(exe|zip|apk|scr)\b/.test(t))r.push([.3,"Mentions a risky file type (.exe, .zip, .apk)"]);return[Math.min(1,r.reduce((s,x)=>s+x[0],0)),r.map(x=>x[1])]}
+function analyze(text,src){text=text.trim();let s,why,links=[],kind;
+if(!/\s/.test(text)&&/[./]/.test(text)){kind="URL";[s,why]=urlRules(text)}
+else{kind="Message";[s,why]=msgRules(text);(text.match(URLRE)||[]).forEach(u=>{const[ls,lw]=urlRules(u);links.push({u,l:lvl(ls)});s=Math.max(s,ls)})}
+return{kind,text,s,l:lvl(s),why:why.length?why:["No warning signs found"],links,src:src||"Web",ts:new Date().toLocaleString(),t:Date.now()}}
+function gauge(r){const c=COL[cls(r.l)];return`<svg width="140" height="140" viewBox="0 0 140 140"><circle cx="70" cy="70" r="54" fill="none" stroke="var(--bd)" stroke-width="12"/>
+<circle class="arc" data-s="${r.s}" cx="70" cy="70" r="54" fill="none" stroke="${c}" stroke-width="12" stroke-linecap="round" stroke-dasharray="339.3" stroke-dashoffset="339.3" transform="rotate(-90 70 70)" style="transition:stroke-dashoffset 1.2s"/>
+<text x="70" y="78" text-anchor="middle" fill="${c}" font-size="28" font-weight="800">${Math.round(r.s*100)}%</text></svg>`}
+function card(r,full){return`<div class="card"><div class="res">${full?`<div>${gauge(r)}</div>`:""}<div><span class="pill ${cls(r.l)}">${r.l}</span> <small>${r.kind} · ${esc(r.src)} · ${esc(r.ts)}</small>
+<p>${hl(r.text.slice(0,240))}</p><ul>${r.why.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>
+${r.links.map(l=>`<p><code>${hl(l.u)}</code> <span class="pill ${cls(l.l)}">${l.l}</span></p>`).join("")}
+${full?`<p><b>Advice:</b> ${ADV[r.l]}</p><button onclick="copyRes()">Copy result</button><button onclick="dl()">Download report</button><button class="o" onclick="askAI(this)">AI second opinion</button><div class="ai"></div>`:""}</div></div></div>`}
+function anim(){requestAnimationFrame(()=>requestAnimationFrame(()=>document.querySelectorAll(".arc").forEach(a=>a.style.strokeDashoffset=339.3*(1-a.dataset.s))))}
+let last,hist=[],ses=null;const LS=(k,v)=>{try{if(v===undefined)return JSON.parse(localStorage.getItem(k)||"null");localStorage.setItem(k,JSON.stringify(v))}catch(e){return null}};function loadHist(){hist=ses?(LS("lg_h_"+ses)||[]):[]}
+function save(){if(ses)LS("lg_h_"+ses,hist.slice(0,1000))}
+function needLogin(){must=true;authView(Object.keys(U).length?"login":"signup");$("auth").classList.add("show");amsg("Please log in or create an account to check links and messages.")}
+async function run(){const v=inp.value.trim();if(!v)return;if(!ses)return needLogin();out.innerHTML='<div class="card scan"></div>';const sc=out.firstChild;
+for(const s of ["Reading input…","Checking domain patterns…","Matching scam keywords…","Calculating risk…"]){sc.innerHTML+=`<div>▸ ${s}</div>`;await new Promise(r=>setTimeout(r,320))}
+if(cm=="b"){const rs=v.split("\n").filter(x=>x.trim()).map(x=>analyze(x,"Bulk"));hist.unshift(...rs.reverse());save();out.innerHTML=`<div class="card"><b>Bulk results (${rs.length})</b>`+rs.reverse().map(r=>`<p><span class="pill ${cls(r.l)}">${r.l}</span> <code>${hl(r.text.slice(0,90))}</code></p>`).join("")+"</div>";draw();return}
+last=analyze(v,cm=="e"?"Email":"Web");hist.unshift(last);save();out.innerHTML=card(last,true);anim();draw()}
+function copyRes(){const t=`${last.l} (${Math.round(last.s*100)}%): ${last.why.join("; ")}`;try{navigator.clipboard.writeText(t)}catch(e){}event.target.textContent="Copied"}
+async function dl(){const d=await claude.use("downloads");if(!d){event.target.textContent="Download unavailable here";return}const r=last;
+try{await d.save({filename:"risk-report.txt",data:`LinkGuard risk report\n${r.ts}\nType: ${r.kind}\nInput: ${r.text}\nRisk: ${r.l} (${Math.round(r.s*100)}%)\n\nWarning signs:\n- ${r.why.join("\n- ")}\n\nAdvice: ${ADV[r.l]}\n`})}catch(e){}}
+async function askAI(b){const d=b.parentNode.querySelector(".ai");d.textContent="Thinking…";
+try{const s=await claude.use("sample");if(!s){d.textContent="AI opinion isn’t available in this view.";return}
+const r=await s(`You are a phishing and scam analyst. In 3 short sentences, say whether this ${last.kind} looks Low Risk, Suspicious or High Risk, and why. Never visit links. Text: ${last.text}`);d.innerHTML="<p>"+esc(r.text)+"</p>"}
+catch(e){d.textContent="AI opinion unavailable right now."}}
+const EX={u:["https://www.wikipedia.org","http://bit.ly/verify-bank-kyc","http://192.168.1.5/secure-login/update","http://sbi-account-verify.xyz/login"],
+m:["Your account is blocked! Update KYC immediately: http://hdfc-kyc.top/login","Congratulations! You won ₹50,000 cashback. Claim: bit.ly/win-now","Hi, are we still meeting for lunch tomorrow?"],e:["Dear customer, your invoice is attached (invoice.zip). Verify your account within 24 hours: http://paypa1-secure.top/login","Hi team, the meeting notes are in the shared drive. See you Monday."],b:["https://www.wikipedia.org\nhttp://bit.ly/verify-bank-kyc\nhttp://192.168.1.5/secure-login\nhttps://www.google.com"]};let cm="u";
+function mode(k,b){cm=k;document.querySelectorAll(".tab").forEach(t=>{t.classList.remove("on");t.classList.add("o")});b.classList.add("on");b.classList.remove("o");
+inp.placeholder={u:"Paste a URL…",m:"Paste an SMS message…",e:"Paste the full email text (sender, subject, body)…",b:"Paste many URLs or messages, one per line…"}[k];$("chips").innerHTML="<small>Try: </small>"+EX[k].map((e,i)=>`<button class="chip" onclick="inp.value=EX['${k}'][${i}];run()">${esc(e.slice(0,34))}…</button>`).join("")}
+mode("u",document.querySelector(".tab"));
+function scan(){if(!ses)return needLogin();box.value.split(/\n\s*\n/).filter(x=>x.trim()).forEach(t=>hist.unshift(analyze(t,"SMS")));box.value="";save();draw()}
+function draw(){const c=l=>hist.filter(x=>x.l==l).length;
+$("dash").innerHTML=[["Checked",hist.length,"var(--ac)"],["High Risk",c("High Risk"),COL.High],["Suspicious",c("Suspicious"),COL.Suspicious],["Low Risk",c("Low Risk"),COL.Low]].map(x=>`<div class="card"><div class="big" style="color:${x[2]}">${x[1]}</div>${x[0]}</div>`).join("");
+$("feed").innerHTML=hist.slice(0,8).map(r=>card(r,false)).join("")||'<p class="mut">No checks yet. Try one above.</p>'}
+function theme(){const r=document.documentElement,t=r.dataset.theme=="dark"?"light":"dark";r.dataset.theme=t;try{localStorage.theme=t}catch(e){}}
+try{if(localStorage.theme)document.documentElement.dataset.theme=localStorage.theme}catch(e){}
+(function(){const c=$("mx"),x=c.getContext("2d");let w,h,d;const rs=()=>{w=c.width=c.offsetWidth;h=c.height=c.offsetHeight;d=Array(Math.ceil(w/16)).fill(0).map(()=>Math.random()*h/16)};rs();addEventListener("resize",rs);
+if(matchMedia("(prefers-reduced-motion:reduce)").matches)return;
+setInterval(()=>{x.globalCompositeOperation="destination-out";x.fillStyle="rgba(0,0,0,.1)";x.fillRect(0,0,w,h);x.globalCompositeOperation="source-over";
+x.fillStyle=getComputedStyle(document.documentElement).getPropertyValue("--ac");x.font="14px monospace";
+d.forEach((y,i)=>{x.fillText("01$#@%"[Math.floor(Math.random()*6)],i*16,y*16);d[i]=y*16>h&&Math.random()>.97?0:y+1})},70)})();
+const TIPS=["Banks never ask for your OTP, PIN or CVV by SMS, call or link.","Hover or long-press a link to see where it really goes before you tap.","Shortened links hide the destination. Expand them before trusting them.","Urgency (“within 24 hours!”) is a pressure tactic. Pause and verify.","A padlock or HTTPS doesn’t mean a site is safe, only that it’s encrypted.","Never install an .apk sent over SMS or WhatsApp.","If an offer is too good to be true, it’s bait."];
+$("sod").innerHTML="<b>Scam tip of the day</b><br>"+TIPS[Math.floor(Date.now()/864e5)%TIPS.length];
+
+/* ---------- AUTH (accounts stored on this device) ---------- */
+let U=LS("lg_users")||{};const QS=["What was your first school?","What is your pet’s name?","Who was your favourite teacher?","In which city were you born?"];
+const gv=id=>$(id).value.trim(),amsg=t=>{$("amsg").textContent=t};
+async function H(p,salt){const b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(salt+":"+p));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join("")}
+/* ===== GOOGLE SIGN-IN SETUP =====
+   1) Google Cloud Console > APIs & Services > Credentials > Create OAuth client ID (Web application)
+   2) Add your site address under "Authorized JavaScript origins" (e.g. http://localhost:8000)
+   3) Paste the Client ID below, then open the page from that address (not from file://) */
+const GOOGLE_CLIENT_ID="PASTE_YOUR_CLIENT_ID.apps.googleusercontent.com";
+let gReady=false;
+function loadG(){if(gReady||!GOOGLE_CLIENT_ID||GOOGLE_CLIENT_ID.startsWith("PASTE")||document.getElementById("gsi"))return;const sc=document.createElement("script");sc.id="gsi";sc.src="https://accounts.google.com/gsi/client";sc.async=true;
+sc.onload=()=>{google.accounts.id.initialize({client_id:GOOGLE_CLIENT_ID,callback:gCb});gReady=true;gBtn()};document.head.appendChild(sc)}
+function gBtn(){const d=$("gbtn");if(!d)return;if(gReady)google.accounts.id.renderButton(d,{theme:"outline",size:"large",text:"continue_with",width:300});
+else d.innerHTML=`<button class="o" style="width:100%" onclick="amsg('Google sign-in is not set up here. Add a Google Client ID and open the page from an http(s) address (see the setup note in the file).')">Continue with Google</button>`}
+function gCb(r){try{const p=JSON.parse(decodeURIComponent(escape(atob(r.credential.split(".")[1].replace(/-/g,"+").replace(/_/g,"/"))))),e=p.email.toLowerCase();
+U[e]=U[e]||{u:p.name||e.split("@")[0],g:1};LS("lg_users",U);start(e)}catch(x){amsg("Google sign-in failed. Please try again.")}}
+let must=false;
+function authView(m,g,fe){const b=$("abox"),t=x=>`<h2 style="margin-top:0">${x}</h2>`,G='<div id="gbtn" style="margin:8px 0"></div><p class="mut" style="text-align:center;margin:6px">or use email</p>';
+if(m=="login")b.innerHTML=t("Log in")+G+`<input id="a_email" type="email" placeholder="Email" autocomplete="username"><input id="a_pw" type="password" placeholder="Password" autocomplete="current-password"><div id="amsg"></div><button style="width:100%" onclick="doLogin()">Log in</button><p><a class="lk" onclick="authView('forgot')">Forgot password?</a></p><p class="mut">New here? <a class="lk" onclick="authView('signup')">Create an account</a></p>`;
+else if(m=="signup")b.innerHTML=t("Create account")+G+`<input id="a_user" placeholder="Username"><input id="a_email" type="email" placeholder="Email"><input id="a_pw" type="password" placeholder="Password (min 6 characters)" autocomplete="new-password"><div id="amsg"></div><button style="width:100%" onclick="doSignup()">Create account</button><p class="mut">Already registered? <a class="lk" onclick="authView('login')">Log in</a></p>`;
+else b.innerHTML=t("Forgot password")+`<p class="mut">This site has no email service, so a reset link cannot be sent. You can continue with Google, or reset the account on this device and register again with the same email (your saved history is kept).</p><input id="a_email" type="email" placeholder="Your account email"><div id="amsg"></div><button style="width:100%" onclick="fpReset()">Reset account on this device</button><p><a class="lk" onclick="authView('login')">Back to log in</a></p>`;
+b.insertAdjacentHTML("afterbegin","<div style=\"text-align:right\"><button class=\"o\" onclick=\"$('auth').classList.remove('show')\">X</button></div>");
+if(m=="login"||m=="signup"){gBtn();loadG()}}
+async function doSignup(){const u=gv("a_user"),e=gv("a_email").toLowerCase(),p=$("a_pw").value;
+if(!u||!e)return amsg("Please fill all fields.");if(!/^\S+@\S+\.\S+$/.test(e))return amsg("Enter a valid email.");if(p.length<6)return amsg("Password needs at least 6 characters.");
+if(U[e])return amsg("Account exists. Please log in.");const sl=crypto.randomUUID();U[e]={u,s:sl,h:await H(p,sl)};LS("lg_users",U);start(e)}
+async function doLogin(){const e=gv("a_email").toLowerCase(),a=U[e];if(a&&a.g&&!a.h)return amsg("This account uses Google sign-in.");if(!a||a.h!=await H($("a_pw").value,a.s))return amsg("Wrong email or password.");start(e)}
+function fpReset(){const e=gv("a_email").toLowerCase();if(!U[e])return amsg("No account with that email.");delete U[e];LS("lg_users",U);authView("signup");$("a_email").value=e}
+function start(e){must=false;ses=e;LS("lg_ses",e);loadHist();$("auth").classList.remove("show");
+$("usr").innerHTML=profWidget(e);draw()}
+function logout(){must=false;try{localStorage.removeItem("lg_ses")}catch(x){}ses=null;hist=[];$("usr").innerHTML="";draw();authView("login");$("auth").classList.add("show")}
+/* ---------- DASHBOARD ---------- */
+const MN=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],mk=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0");
+function lastMonths(n){const o=[],d=new Date();d.setDate(1);for(let i=0;i<n;i++){o.unshift({k:mk(d),l:MN[d.getMonth()]+" "+String(d.getFullYear()).slice(2),y:d.getFullYear(),m:d.getMonth()});d.setMonth(d.getMonth()-1)}return o}
+function bucket(){const m={};hist.forEach(r=>{const t=r.t||Date.parse(r.ts);if(!t)return;const d=new Date(t),k=mk(d),o=m[k]=m[k]||{H:0,S:0,L:0,n:0,sum:0,days:{}},c=r.l[0];o[c]++;o.n++;o.sum+=r.s;(o.days[d.getDate()]=o.days[d.getDate()]||{H:0,S:0,L:0})[c]++});return m}
+const CC=[["L","var(--low)"],["S","var(--sus)"],["H","var(--high)"]];
+function stack(it,W,Ht){const mx=Math.max(1,...it.map(x=>x.H+x.S+x.L)),bw=W/it.length,p=Ht-24;let o=`<svg viewBox="0 0 ${W} ${Ht}" style="width:100%">`;
+it.forEach((x,i)=>{let y=p;CC.forEach(([k,c])=>{const h=x[k]/mx*(p-12);y-=h;if(h)o+=`<rect x="${i*bw+bw*.15}" y="${y}" width="${bw*.7}" height="${h}" fill="${c}" rx="3"><title>${x.label}: ${k=="H"?"High":k=="S"?"Suspicious":"Low"} ${x[k]}</title></rect>`});o+=`<text x="${i*bw+bw/2}" y="${Ht-8}" text-anchor="middle" font-size="11" fill="var(--mut)">${x.label}</text>`});return o+"</svg>"}
+function donut(c){const t=c.H+c.S+c.L;if(!t)return'<p class="mut">No checks this month.</p>';let off=0,o='<svg viewBox="0 0 140 140" width="150"><g transform="rotate(-90 70 70)">';
+[["H","var(--high)"],["S","var(--sus)"],["L","var(--low)"]].forEach(([k,col])=>{const l=c[k]/t*314.16;o+=`<circle cx="70" cy="70" r="50" fill="none" stroke="${col}" stroke-width="22" stroke-dasharray="${l} ${314.16-l}" stroke-dashoffset="${-off}"/>`;off+=l});
+return o+`</g><text x="70" y="76" text-anchor="middle" font-size="22" font-weight="800" fill="var(--fg)">${t}</text></svg>`}
+function openDash(){$("dm").classList.add("show");renderDash()}
+function renderDash(sel){const B=bucket(),ms=lastMonths(12);sel=sel||ms[11].k;const cur=B[sel]||{H:0,S:0,L:0,days:{}},m=ms.find(x=>x.k==sel),dim=new Date(m.y,m.m+1,0).getDate();
+const day=[...Array(dim)].map((_,i)=>{const d=i+1,c=cur.days[d]||{H:0,S:0,L:0};return{...c,label:(d==1||d%5==0)?d:""}});
+$("dbody").innerHTML=`<p class="mut">Your risk history by month. Colours run from green (low risk) to red (high risk).</p>
+<div class="card"><b>Average risk, last 12 months</b><div style="display:flex;gap:3px;margin-top:8px">${ms.map(x=>{const o=B[x.k],a=o?o.sum/o.n:null;return`<div title="${x.l}" style="flex:1;text-align:center;font-size:10px"><div style="height:34px;border-radius:5px;background:${a==null?"var(--bd)":`hsl(${120*(1-a)},70%,42%)`};color:#fff;line-height:34px">${a==null?"":Math.round(a*100)+"%"}</div>${x.l.slice(0,3)}</div>`}).join("")}</div></div>
+<div class="card"><b>Checks per month</b>${stack(ms.slice(6).map(x=>({...(B[x.k]||{H:0,S:0,L:0}),label:x.l})),600,210)}<small><span style="color:var(--high)">■</span> High &nbsp;<span style="color:var(--sus)">■</span> Suspicious &nbsp;<span style="color:var(--low)">■</span> Low</small></div>
+<div class="card"><b>Month:</b> <select id="dmon" onchange="renderDash(this.value)" style="width:auto">${ms.slice().reverse().map(x=>`<option value="${x.k}" ${x.k==sel?"selected":""}>${x.l}</option>`).join("")}</select>
+<div class="res"><div>${donut(cur)}</div><div style="flex:1;min-width:250px">${stack(day,620,170)}</div></div></div>
+<button class="o" onclick="addSample()">Load sample data</button><button class="o" onclick="hist=hist.filter(r=>r.src!='Sample');save();renderDash(window._s);draw()">Remove sample data</button>`;$("dmon").onchange=function(){window._s=this.value;renderDash(this.value)}}
+function addSample(){const n=Date.now();for(let i=0;i<70;i++){const t=n-Math.random()*170*864e5,x=Math.pow(Math.random(),1.3);hist.push({kind:"URL",text:"Sample entry",s:x,l:lvl(x),why:["Sample data"],links:[],src:"Sample",ts:new Date(t).toLocaleString(),t})}save();renderDash();draw()}
+
+/* ---------- PROFILE MENU ---------- */
+const ICON='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>';
+function profWidget(e){const a=U[e];return `<button class="o av" onclick="ddt(event)" title="Profile">${ICON}</button><div class="dd" id="dd"><b>${esc(a.u)}</b><br><small>${esc(e)}</small><hr style="border:0;border-top:1px solid var(--bd);margin:8px 0"><a class="lk2" onclick="openP('profile')">Profile</a><a class="lk2" onclick="openP('settings')">Settings</a><a class="lk2" onclick="openDash()">Dashboard</a><a class="lk2" onclick="logout()">Log out</a></div>`}
+function ddt(ev){ev.stopPropagation();$("dd").classList.toggle("show")}
+document.addEventListener("click",()=>{const d=$("dd");if(d)d.classList.remove("show")});
+function openP(k){const e=ses,a=U[e],b=$("pmb"),cl='<div style="text-align:right"><button class="o" onclick="pm.classList.remove(\'show\')">X</button></div>',c=l=>hist.filter(x=>x.l==l).length;
+if(k=="profile")b.innerHTML=cl+`<h2 style="margin-top:0">Profile</h2><div class="card"><b>${esc(a.u)}</b><br>${esc(e)}<br><small>Sign-in method: ${a.g?"Google":"Email and password"}</small></div><div class="grid"><div class="card"><div class="big">${hist.length}</div>Checks</div><div class="card"><div class="big" style="color:var(--high)">${c("High Risk")}</div>High Risk</div><div class="card"><div class="big" style="color:var(--sus)">${c("Suspicious")}</div>Suspicious</div></div>`;
+else b.innerHTML=cl+`<h2 style="margin-top:0">Settings</h2><b>Username</b><input id="s_u" value="${esc(a.u)}"><button onclick="saveName()">Save name</button>
+${a.g?"":`<p><b>Change password</b></p><input id="s_op" type="password" placeholder="Current password"><input id="s_np" type="password" placeholder="New password (min 6 characters)"><button onclick="savePw()">Change password</button>`}
+<p><b>Preferences and data</b></p><button class="o" onclick="theme()">Switch theme</button><button class="o" onclick="if(confirm('Clear all your saved checks?')){hist=[];save();draw();smsg('History cleared.')}">Clear history</button><button class="red" onclick="delAcc()">Delete account</button><p id="smsg" class="mut"></p>`;
+$("dd").classList.remove("show");$("pm").classList.add("show")}
+const smsg=t=>{const m=$("smsg");if(m)m.textContent=t};
+function saveName(){const n=gv("s_u");if(!n)return smsg("Enter a name.");U[ses].u=n;LS("lg_users",U);$("usr").innerHTML=profWidget(ses);smsg("Saved.")}
+async function savePw(){const a=U[ses];if(a.h!=await H($("s_op").value,a.s))return smsg("Current password is wrong.");if($("s_np").value.length<6)return smsg("New password needs at least 6 characters.");a.h=await H($("s_np").value,a.s);LS("lg_users",U);smsg("Password changed.")}
+function delAcc(){if(!confirm("Delete your account and saved history from this device?"))return;const e=ses;delete U[e];LS("lg_users",U);try{localStorage.removeItem("lg_h_"+e)}catch(x){}$("pm").classList.remove("show");logout()}
+function sg(ev,b){ev.stopPropagation();const m=b.nextElementSibling,o=m.classList.contains("show");document.querySelectorAll(".sm").forEach(x=>x.classList.remove("show"));if(!o)m.classList.add("show")}
+document.addEventListener("click",()=>document.querySelectorAll(".sm").forEach(x=>x.classList.remove("show")));
+function fixH(){const h=document.querySelector("header");document.body.style.paddingTop=h.offsetHeight+"px"}
+fixH();addEventListener("resize",fixH);addEventListener("load",fixH);if(window.ResizeObserver)new ResizeObserver(fixH).observe(document.querySelector("header"));
+document.querySelectorAll(".sg a").forEach(l=>l.addEventListener("click",e=>{e.preventDefault();const w=window.open(l.href,"_blank");
+if(w){try{w.opener=null}catch(x){}return}
+$("pmb").innerHTML=`<div style="text-align:right"><button class="o" onclick="pm.classList.remove('show')">X</button></div><h2 style="margin-top:0">Open this profile</h2><p class="mut">Your viewer blocked the link. Tap it below, or copy it and paste it into Safari or Chrome.</p><p><a class="lk" href="${l.href}" target="_top" rel="noopener">${l.href}</a></p>`;$("pm").classList.add("show")}));
+/* ---------- INIT ---------- */
+ses=LS("lg_ses");if(ses&&U[ses])start(ses);else{ses=null;authView(Object.keys(U).length?"login":"signup");$("auth").classList.add("show")}
+draw();
+</script></body></html>
